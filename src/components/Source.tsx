@@ -5,9 +5,10 @@ import type { Item as ItemType } from './MultipleContainersContext'
 import { getColor, SortableItem } from './SortableItem'
 import { type DragOverEvent, type UniqueIdentifier, useDndMonitor } from '@dnd-kit/core'
 import { Item } from './Item'
+import { nanoid } from 'nanoid'
 
 export const SOURCE_ITEMS = createRange<ItemType>(3, (index) => ({
-	id: `A${index + 1}`,
+	id: nanoid(),
 	label: `A${index + 1}`,
 }))
 

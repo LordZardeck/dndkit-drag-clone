@@ -1,68 +1,18 @@
 import { useState } from 'react'
-import { Container } from './Container'
+import { Container } from '../Container'
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { SortableItem } from './SortableItem'
-import type { Item } from './MultipleContainersContext'
-import { createRange } from '../utils'
-import {
-	closestCenter,
-	type CollisionDetection,
-	getFirstCollision,
-	pointerWithin,
-	rectIntersection,
-	type UniqueIdentifier,
-	useDndMonitor,
-} from '@dnd-kit/core'
-import { SOURCE_ITEMS } from './Source'
-
-let nextId = 5
-
-export const collisionDetectionStrategy: CollisionDetection = (args) => {
-	const items = args.droppableContainers
-		.filter((container) => container.data.current?.container === 'B')
-		.map((container) => container.data.current?.item.id as UniqueIdentifier)
-
-	if (args.active.id && items.includes(args.active.id)) {
-		return closestCenter({
-			...args,
-			droppableContainers: args.droppableContainers.filter((container) =>
-				items.includes(container.id),
-			),
-		})
-	}
-
-	// Start by finding any intersecting droppable
-	const pointerIntersections = pointerWithin(args)
-	const intersections =
-		pointerIntersections.length > 0
-			? // If there are droppables intersecting with the pointer, return those
-				pointerIntersections
-			: rectIntersection(args)
-	let overId = getFirstCollision(intersections, 'id')
-
-	if (overId != null && items.includes(overId)) {
-		// If a container is matched, and it contains items (columns 'A', 'B', 'C')
-		if (items.length > 0) {
-			// Return the closest droppable within that container
-			overId = closestCenter({
-				...args,
-				droppableContainers: args.droppableContainers.filter(
-					(container) => container.id !== overId && items.includes(container.id),
-				),
-			})[0]?.id
-		}
-
-		return [{ id: overId }]
-	}
-
-	return []
-}
+import { SortableItem } from '../SortableItem.tsx'
+import type { Item } from '../MultipleContainersContext.tsx'
+import { createRange } from '../../utils'
+import { useDndMonitor } from '@dnd-kit/core'
+import { SOURCE_ITEMS } from '../Source.tsx'
+import { nanoid } from 'nanoid'
 
 export function Destination() {
 	const [clonedItems, setClonedItems] = useState<Item[] | null>(null)
 	const [destinationItems, setDestinationItems] = useState<Item[]>(
 		createRange<Item>(3, (index) => ({
-			id: `B${index + 1}`,
+			id: nanoid(),
 			label: `B${index + 1}`,
 		})),
 	)
@@ -151,8 +101,8 @@ export function Destination() {
 						console.log('lastActiveIndex', lastActiveIndex)
 
 						nextItems[lastActiveIndex] = {
-							id: nextId,
-							label: `${active.id} -> B${nextId++}`,
+							id: nanoid(),
+							label: `${active.data.current?.item.label}`,
 						}
 					}
 

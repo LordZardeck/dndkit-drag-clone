@@ -10,8 +10,8 @@ import {
 	useSensors,
 } from '@dnd-kit/core'
 import { type PropsWithChildren } from 'react'
-import { collisionDetectionStrategy as destinationDollisionDetectionStrategy } from './Destination'
 import { coordinateGetter } from '../utils'
+import { collisionDetectionStrategy as destinationDollisionDetectionStrategy } from './Destination/collisionDetectionStrategy.tsx'
 
 export type Items = Record<UniqueIdentifier, UniqueIdentifier[]>
 export type Item = {
